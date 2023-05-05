@@ -1,0 +1,65 @@
+import com.slack.keeper.KeeperVariantMarker
+
+plugins {
+    id("com.android.application")
+    id("kotlin-android")
+    id("com.slack.keeper") version "0.14.0"
+    id("java-test-fixtures")
+}
+
+kotlin {
+    jvmToolchain(17)
+}
+
+repositories {
+    mavenCentral()
+    google()
+}
+
+androidComponents {
+    beforeVariants(selector().withBuildType("releaseTest")) { variantBuilder ->
+        registerExtension(KeeperVariantMarker.class, KeeperVariantMarker.INSTANCE)
+    }
+    beforeVariants(selector().all()) { variantBuilder ->
+        variantBuilder.enableAndroidTest = true
+    }
+}
+
+android {
+    compileSdk = 33
+    namespace("com.keeper.repro")
+
+    defaultConfig {
+        minSdk = 26
+        applicationId = "com.keeper.repro"
+    }
+
+    testBuildType "releaseTest"
+
+    buildTypes {
+        named("debug") {
+            applicationIdSuffix ".debug"
+        }
+        named("release") {
+            minifyEnabled true
+
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+        }
+
+        register("releaseTest") {
+            initWith getByName("release")
+
+            testProguardFile "proguard-rules-test.pro"
+        }
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation("com.google.android.material:material:1.6.1")
+
+    androidTestImplementation(testFixtures(project(":ui-testing")))
+}
