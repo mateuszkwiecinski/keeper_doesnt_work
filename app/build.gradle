@@ -17,7 +17,7 @@ repositories {
 }
 
 androidComponents {
-    beforeVariants(selector().withBuildType("releaseTest")) { variantBuilder ->
+    beforeVariants(selector().withBuildType("release")) { variantBuilder ->
         registerExtension(KeeperVariantMarker.class, KeeperVariantMarker.INSTANCE)
     }
     beforeVariants(selector().all()) { variantBuilder ->
@@ -34,24 +34,16 @@ android {
         applicationId = "com.keeper.repro"
     }
 
-    testBuildType "releaseTest"
+    testBuildType 'release'
 
     buildTypes {
-        named("debug") {
-            applicationIdSuffix ".debug"
-        }
         named("release") {
             minifyEnabled true
 
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
         }
-
-        register("releaseTest") {
-            initWith getByName("release")
-
-            testProguardFile "proguard-rules-test.pro"
-        }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -59,7 +51,5 @@ android {
 }
 
 dependencies {
-    implementation("com.google.android.material:material:1.6.1")
-
     androidTestImplementation(testFixtures(project(":ui-testing")))
 }
