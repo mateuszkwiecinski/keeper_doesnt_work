@@ -3,7 +3,7 @@ import com.slack.keeper.KeeperVariantMarker
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    id("com.slack.keeper") version "0.14.0"
+    id("com.slack.keeper") version "0.15.0"
     id("java-test-fixtures")
 }
 
